@@ -10,10 +10,10 @@ def get_file_content(working_directory, file_path):
         if not os.path.isfile(full_file_path):
             return f'Error: File not found or is not a regular file: "{file_path}"'
 
-        valid_target_dir = (
+        valid_target_path = (
             os.path.commonpath([working_dir_path, full_file_path]) == working_dir_path
         )
-        if not valid_target_dir:
+        if not valid_target_path:
             return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
 
         f = open(full_file_path, "r")

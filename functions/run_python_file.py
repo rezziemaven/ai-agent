@@ -4,7 +4,7 @@ import subprocess
 from google.genai import types
 
 
-def run_python_file(working_directory, file_path, args=None):
+def _run_python_file(working_directory, file_path, args=None):
 
     try:
         working_dir_path = os.path.abspath(working_directory)
@@ -41,6 +41,23 @@ def run_python_file(working_directory, file_path, args=None):
         return output
     except Exception as e:
         return f"Error: executing Python file: {e}"
+
+
+def run_python_file(file_path: str, args=None) -> str:
+    """Executes a python file within the working directory
+
+    Args:
+        file_path: Python file to execute, relative to the working directory
+        args: List of arguments to pass to the file
+
+    Returns:
+        A message with the content from STDOUT or STDERR if the execution was successful, or an error message.
+    """
+
+    working_directory = "./calculator"
+    return _run_python_file(working_directory, file_path, args)
+
+
 schema_run_python_file_genai = types.FunctionDeclaration(
     name="run_python_file",
     description="Executes a python file within the working directory",

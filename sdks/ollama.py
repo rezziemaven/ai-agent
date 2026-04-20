@@ -1,3 +1,5 @@
+import sys
+
 from dataclasses import dataclass
 
 from ollama import ChatResponse, chat, create
@@ -27,42 +29,55 @@ def use_ollama_sdk(prompt, verbose=False):
     messages = [{"role": "user", "content": prompt}]
     create(model="custom_model", from_="minimax-m2.5:cloud", system=system_prompt)
 
-    prompt_token_count = 0
-    response_token_count = 0
-    response_function_calls = []
-
-    if response != None:
-        prompt_token_count = response.prompt_eval_count
-        response_token_count = response.eval_count
-
-    if response.message.tool_calls:
-        for tc in response.message.tool_calls:
-            if tc.function.name in available_functions:
-                response_function_calls.append(
-                    ToolCall(name=tc.function.name, args=tc.function.arguments)
-                )
-
-    function_results = []
-    function_call_result = None
-    # print(response.function_calls)
-    if len(response_function_calls) != 0:
-        function_call_result = call_function(
-            response_function_calls[0], verbose=verbose
+    for _ in range(20):
+        response: ChatResponse = chat(
+            model="custom_model",
+            messages=messages,
+            tools=list(available_functions.values()),
+            think=True
         )
 
-        if function_call_result["content"] == None:
-            raise Exception("Error: tool call content not found")
+        messages.append(response.message)
 
-        function_results.append(function_call_result)
+        prompt_token_count = 0
+        response_token_count = 0
+        response_function_calls = []
 
-        if verbose:
-            print(f"-> {function_call_result['content']}")
+        if response != None:
+            prompt_token_count = response.prompt_eval_count
+            response_token_count = response.eval_count
+
+        if response.message.tool_calls:
+            for tc in response.message.tool_calls:
+                if tc.function.name in available_functions:
+                    response_function_calls.append(
+                        ToolCall(name=tc.function.name, args=tc.function.arguments)
+                    )
+                    tool = ToolCall(name=tc.function.name, args=tc.function.arguments)
+                    response_function_calls.append(tool)
+                    function_result = call_function(tool, verbose)
+                    if function_result["content"] == None:
+                        raise Exception("Error: tool call content not found")
+
+                    if verbose:
+                        print(f"-> {function_result['content']}")
+
+                    messages.append(function_result)
+
+        else:
+            break
+
+    if response == None:
+        print("Error: Model did not generate final response")
+        sys.exit(1)
+
+
 
     return (
         prompt_token_count,
         response_token_count,
         response.message.content,
-        function_results,
+        response_function_calls,
     )
 
 
@@ -77,7 +92,7 @@ def call_function(function_call, verbose=False):
         return {
             "role": "tool",
             "tool_name": function_name,
-            "content": {"error": f"Unknown function: {function_name}"},
+            "content": str({"error": f"Unknown function: {function_name}"}),
         }
 
     args = dict(function_call.args) if function_call.args else {}
@@ -88,5 +103,5 @@ def call_function(function_call, verbose=False):
     return {
         "role": "tool",
         "tool_name": function_name,
-        "content": {"result": function_result},
+        "content": str({"result": function_result}),
     }

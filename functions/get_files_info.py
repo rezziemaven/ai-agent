@@ -2,7 +2,8 @@ import os
 
 from google.genai import types
 
-def get_files_info(working_directory, directory="."):
+
+def _get_files_info(working_directory, directory="."):
     try:
         working_dir_path = os.path.abspath(working_directory)
         target_dir_path = os.path.normpath(os.path.join(working_dir_path, directory))
@@ -25,6 +26,22 @@ def get_files_info(working_directory, directory="."):
         return output
     except Exception as e:
         return f"Error: {e}"
+
+
+def get_files_info(directory: str = ".") -> str:
+    """Lists contents of a specified directory relative to the working directory, providing file size and directory status
+
+    Args:
+        directory: Directory path to list file contents from, relative to the working directory (default is the working directory itself)
+
+    Returns:
+        A listing of the files in the directory, or an error message.
+    """
+
+    working_directory = "./calculator"
+    return _get_files_info(working_directory, directory)
+
+
 schema_get_files_info_genai = types.FunctionDeclaration(
     name="get_files_info",
     description="Lists files in a specified directory relative to the working directory, providing file size and directory status",

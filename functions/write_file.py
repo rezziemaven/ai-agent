@@ -3,7 +3,7 @@ import os
 from google.genai import types
 
 
-def write_file(working_directory, file_path, content):
+def _write_file(working_directory, file_path, content):
     try:
         working_dir_path = os.path.abspath(working_directory)
         full_file_path = os.path.normpath(os.path.join(working_dir_path, file_path))
@@ -17,7 +17,6 @@ def write_file(working_directory, file_path, content):
             return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
 
         # Make sure that all parent directories of the file_path exist
-        print(os.path.dirname(full_file_path))
         os.makedirs(os.path.dirname(full_file_path), exist_ok=True)
 
         f = open(full_file_path, "w")
@@ -28,6 +27,23 @@ def write_file(working_directory, file_path, content):
 
     except Exception as e:
         return f"Error: {e}"
+
+
+def write_file(file_path: str, content: str) -> str:
+    """Writes content to a file relative to the working directory
+
+    Args:
+        file_path: Path of file to write content to, relative to the working directory
+        content: Content to write to the file
+
+    Returns:
+        A success message with the number of characters written, or an error message.
+    """
+
+    working_directory = "./calculator"
+    return _write_file(working_directory, file_path, content)
+
+
 schema_write_file_genai = types.FunctionDeclaration(
     name="write_file",
     description="Writes content to a given file name relative to the working directory",

@@ -25,12 +25,7 @@ class ToolCall:
 
 def use_ollama_sdk(prompt, verbose=False):
     messages = [{"role": "user", "content": prompt}]
-    create(model="custom_model", from_="llama3.2", system=system_prompt)
-    response: ChatResponse = chat(
-        model="custom_model",
-        messages=messages,
-        tools=list(available_functions.values()),
-    )
+    create(model="custom_model", from_="minimax-m2.5:cloud", system=system_prompt)
 
     prompt_token_count = 0
     response_token_count = 0

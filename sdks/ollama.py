@@ -29,8 +29,10 @@ def use_ollama_sdk(prompt, verbose=False):
     messages = [{"role": "user", "content": prompt}]
     create(model="custom_model", from_="minimax-m2.5:cloud", system=system_prompt)
 
+    response: ChatResponse = None
+
     for _ in range(20):
-        response: ChatResponse = chat(
+        response = chat(
             model="custom_model",
             messages=messages,
             tools=list(available_functions.values()),
@@ -67,7 +69,7 @@ def use_ollama_sdk(prompt, verbose=False):
         else:
             break
 
-    if response == None:
+    if response.message.content == "":
         print("Error: Model did not generate final response")
         sys.exit(1)
 

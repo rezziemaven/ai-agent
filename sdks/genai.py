@@ -1,3 +1,5 @@
+import sys
+
 from google import genai
 from google.genai import types
 
@@ -57,7 +59,9 @@ def use_genai_sdk(api_key, prompt, verbose=False):
         if verbose:
             print(f"-> {function_call_result.parts[0].function_response.response}")
 
-    return (prompt_token_count, response_token_count, response.text, function_results)
+    if response.text == "":
+        print("Error: Model did not generate final response")
+        sys.exit(1)
 
 
 def call_function(function_call, verbose=False):

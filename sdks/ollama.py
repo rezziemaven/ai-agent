@@ -8,7 +8,7 @@ from functions.get_file_content import get_file_content
 from functions.get_files_info import get_files_info
 from functions.run_python_file import run_python_file
 from functions.write_file import write_file
-from prompts import system_prompt
+from config import OLLAMA_BASE_MODEL, SYSTEM_PROMPT
 
 available_functions = {
     "get_files_info": get_files_info,
@@ -27,13 +27,13 @@ class ToolCall:
 
 def use_ollama_sdk(prompt, verbose=False):
     messages = [{"role": "user", "content": prompt}]
-    create(model="custom_model", from_="minimax-m2.5:cloud", system=system_prompt)
+    create(model="noodle-ai", from_=OLLAMA_BASE_MODEL, system=SYSTEM_PROMPT)
 
     response: ChatResponse = None
 
     for _ in range(20):
         response = chat(
-            model="custom_model",
+            model="noodle-ai",
             messages=messages,
             tools=list(available_functions.values()),
             think=True

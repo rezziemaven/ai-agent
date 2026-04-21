@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 from sdks.genai import use_genai_sdk
 from sdks.ollama import use_ollama_sdk
-from sdks.openrouter import use_openrouter_sdk
 
 
 def main():
@@ -17,11 +16,6 @@ def main():
             "Gemini API key not found. Please add key to your .env file."
         )
 
-    openrouter_api_key = os.environ.get("OPENROUTER_API_KEY")
-    if openrouter_api_key == None:
-        raise RuntimeError(
-            "OpenRouter API key not found. Please add key to your .env file."
-        )
     ollama_api_key = os.environ.get("OLLAMA_API_KEY")
     if ollama_api_key == None:
         print(
@@ -41,10 +35,7 @@ def main():
         if sdk == "gemini":
             return use_genai_sdk(gemini_api_key, args.user_prompt, verbose=args.verbose)
 
-        if sdk == "openrouter":
-            return use_openrouter_sdk(
-                openrouter_api_key, args.user_prompt, verbose=args.verbose
-            )
+        # Add any additional SDKs here
 
         return use_ollama_sdk(args.user_prompt, verbose=args.verbose)
 

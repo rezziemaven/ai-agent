@@ -31,7 +31,7 @@ The working directory is set in a `config.py` file. The agent does not have acce
 3. Enter the root of the repository using `cd noodle-ai-agent`.
 4. Copy the  `.env.example` file using `cp .env.example .env`, then add your Gemini and (optionally) Ollama API keys (the key is only required if using a cloud model). You can get the Gemini API Key from [Google AI Studio](https://aistudio.google.com/api-keys) and the Ollama API Key from [the Ollama settings page](https://ollama.com/settings/keys) (note: you will need to be logged in first or create a new account).
 5. Run `uv run main.py` from the root of the repository to install the packages and set up the virtual environment. If successful, you should see example usage instructions printed to the console.
-6. Use the demo calculator project, located in the `demo/` folder to test out the features of the agent before using it with your own projects. Here are some sample prompts to try out:
+6. Use the demo calculator project, located in the `demo/` folder, to test out the features of the agent before using it with your own projects. Here are some sample prompts to try out:
 
     1. "What are the contents of root?"
     2. "What are the contents of the calculator directory?"
